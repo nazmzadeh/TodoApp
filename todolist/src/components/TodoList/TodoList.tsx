@@ -25,9 +25,11 @@ export const TodoList = () => {
     }
   }
   const addTask=()=>{
+   if (task.trim()!=="" && deadline.trim()!=="") {
+    
     const newToDo ={task:task,deadline:deadline};
     setTodoList([...todoList, newToDo])
-{console.log(deadline)}
+   }
 
     setTask("");
     setDeadline("");
