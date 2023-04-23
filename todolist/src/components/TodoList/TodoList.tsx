@@ -5,14 +5,16 @@ import List from '../List/List';
 import './TodoList.scss';
 
 export interface IToDo {
+  id:number;
   task: string;
   deadline: string;
 }
 export const TodoList = () => {
   const { handleSubmit, register, formState: { errors } } = useForm<IToDo>();
   const onSubmit: SubmitHandler<IToDo> = data => console.log(data);
-  const [task,setTask]= useState<string>("");  
-  const [deadline,setDeadline]= useState<string>("");  
+  const [task,setTask]= useState("");  
+  const [deadline,setDeadline]= useState("");  
+  const [id,setId]= useState(0);  
   const [todoList,setTodoList]= useState<IToDo[]>([]);  
   
   const handleChange=(e:ChangeEvent<HTMLInputElement>)=>{
@@ -27,7 +29,8 @@ export const TodoList = () => {
   const addTask=()=>{
    if (task.trim()!=="" && deadline.trim()!=="") {
     
-    const newToDo ={task:task,deadline:deadline};
+    const newToDo ={id:id,task:task,deadline:deadline};
+    setId(id => id + 1);
     setTodoList([...todoList, newToDo])
    }
 
@@ -35,10 +38,11 @@ export const TodoList = () => {
     setDeadline("");
 
   }
-  const completeTask=(taskNameToDelete:string)=>{
-   setTodoList(
+  const completeTask=(taskId:number)=>{
+    setId(0);
+    setTodoList(
     todoList.filter((todo)=>{
-      return todo.task!==taskNameToDelete;
+      return todo.id!==taskId;
     })
    )
   }
@@ -52,7 +56,7 @@ export const TodoList = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="input">
                 <input {...register("task",{required:true})} placeholder="Add Task..." onChange={handleChange} name="task" value={task}/>
-                <input {...register("deadline",{required:true})} placeholder="Add Deadline (in days)..." onChange={handleChange} name="deadline" value={deadline} />
+                <input {...register("deadline",{required:true})} placeholder="Add Deadline (in days)..." onChange={handleChange} name="deadline" className='deadline' value={deadline} />
             </div>
             <button onClick={addTask}>Add</button>
             <div className='errors'>

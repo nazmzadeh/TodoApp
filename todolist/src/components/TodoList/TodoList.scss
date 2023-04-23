@@ -13,20 +13,27 @@
     margin: 0 auto;
     border-radius: 20px;
     margin-top: 30px;
+    box-shadow: $box-shadow;
+
     h1{
         font-size: 40px;
         color: $text_color;
     }
     .container{
         padding: 0px 5%;
-       
+       margin-top: 20px;
         form{
             display: flex;
             align-items: center;
             input{
                 display: block;
                 height: 25px;
-                padding: 12px 0px;
+                padding: 12px 5px;
+                border-radius: 4px;
+                border: 0;
+            }
+            .deadline{
+              border-top: 1px solid;
             }
             button{
                 padding: 22px 25px;
@@ -34,6 +41,8 @@
                 background: $btn_color;
                 border: 0;
                 cursor: pointer;
+                border-radius: 5px;
+
                 &:hover{
                     opacity: 0.7;
                 }
