@@ -3,20 +3,19 @@ import { useForm } from 'react-hook-form';
 import { SubmitHandler } from 'react-hook-form/dist/types';
 import List from '../List/List';
 import './TodoList.scss';
+import { IToDo, IToDos } from '../../interfaces/types';
+import { v4 } from 'uuid';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { add,remove, removeAll } from '../../features/todoSlice';
 
-export interface IToDo {
-  id:number;
-  task: string;
-  deadline: string;
-}
 export const TodoList = () => {
   const { handleSubmit, register, formState: { errors } } = useForm<IToDo>();
-  const onSubmit: SubmitHandler<IToDo> = data => console.log(data);
+  const onSubmit: SubmitHandler<IToDo> = data => console.log(data)
   const [task,setTask]= useState("");  
   const [deadline,setDeadline]= useState("");  
-  const [id,setId]= useState(0);  
-  const [todoList,setTodoList]= useState<IToDo[]>([]);  
+  const todos=useAppSelector((state)=>state.todos)
   
+  const dispatch=useAppDispatch();
   const handleChange=(e:ChangeEvent<HTMLInputElement>)=>{
     if (e.target.name==="task") {
       setTask(e.target.value);
@@ -29,22 +28,19 @@ export const TodoList = () => {
   const addTask=()=>{
    if (task.trim()!=="" && deadline.trim()!=="") {
     
-    const newToDo ={id:id,task:task,deadline:deadline};
-    setId(id => id + 1);
-    setTodoList([...todoList, newToDo])
+    const newToDo ={id:v4(),task:task,deadline:deadline};
+    dispatch(add(newToDo))
    }
 
     setTask("");
     setDeadline("");
 
   }
-  const completeTask=(taskId:number)=>{
-    setId(0);
-    setTodoList(
-    todoList.filter((todo)=>{
-      return todo.id!==taskId;
-    })
-   )
+  const completeTask=(taskId:string)=>{
+   dispatch(remove(taskId))
+  }
+  const completeAll=()=>{
+   dispatch(removeAll())
   }
   return <div className="todolist">
     <header>
@@ -59,12 +55,13 @@ export const TodoList = () => {
                 <input {...register("deadline",{required:true})} placeholder="Add Deadline (in days)..." onChange={handleChange} name="deadline" className='deadline' value={deadline} />
             </div>
             <button onClick={addTask}>Add</button>
+            <button type='button' className='remove_all' onClick={completeAll}>Remove All</button>
             <div className='errors'>
             {errors.task && <span>Please enter task</span>}
             {errors.deadline && <span>and deadline..</span>}
             </div>            
           </form>
-          <List todos={todoList} completeTask={completeTask}/>
+          <List todos={todos} completeAll={completeAll} completeTask={completeTask}/>
         </div>
       </div>
     </main>

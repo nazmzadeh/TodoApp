@@ -1,20 +1,18 @@
-import { IToDo } from "../TodoList/TodoList";
 import "./List.scss"
+import { IToDos } from '../../interfaces/types';
+import { useAppSelector } from '../../store';
 
-export interface IToDos{
-    todos:IToDo[];
-    completeTask(taskId:number):void;
-}
 
 export const List =(props:IToDos)=>{
-    const {todos,completeTask} =props;
+    const {completeTask} =props;
+    const todos=useAppSelector((state)=>state.todos)
     return (
             <ul>
                 {todos.map((todo)=>(
                     <li key={todo.id}>
                         {todo.task ? <span>{todo.task}</span> : <span>Unknown task name</span>}
-                        {todo.deadline ? <span>{todo.deadline}</span> : <span>No deadline</span>}
-                        <button onClick={()=>completeTask(todo.id)}>x</button>
+                        {todo.deadline ? <span className="deadline">{todo.deadline}</span> : <span>No deadline</span>}
+                        <button className="remove" onClick={()=>completeTask(todo.id)}>x</button>
                     </li>
                 ))}
             </ul>
